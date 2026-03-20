@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Check, Copy, LogOut, Play, Users } from 'lucide-react';
-import { useState } from 'react';
 
 export function Lobby() {
   const { room, players, myPlayer, toggleReady, startGame, leaveRoom, subscribeToRoom } = useGameStore();
