@@ -1,16 +1,31 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useEffect } from 'react';
+import { useGameStore } from '@/stores/gameStore';
+import { HomeScreen } from '@/components/game/HomeScreen';
+import { Lobby } from '@/components/game/Lobby';
+import { RoleReveal } from '@/components/game/RoleReveal';
+import { NightPhase } from '@/components/game/NightPhase';
+import { DayPhase } from '@/components/game/DayPhase';
+import { GameOver } from '@/components/game/GameOver';
 
-// IMPORTANT: Fully REPLACE this with your own code
-const PlaceholderIndex = () => {
-  // PLACEHOLDER: Replace this entire return statement with the user's app.
-  // The inline background color is intentionally not part of the design system.
-  return (
-    <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: '#fcfbf8' }}>
-      <img data-lovable-blank-page-placeholder="REMOVE_THIS" src="/placeholder.svg" alt="Your app will live here!" />
-    </div>
-  );
+const Index = () => {
+  const { screen, room, subscribeToRoom } = useGameStore();
+
+  useEffect(() => {
+    if (room && screen !== 'home') {
+      const unsub = subscribeToRoom(room.id);
+      return unsub;
+    }
+  }, [room?.id]);
+
+  switch (screen) {
+    case 'home': return <HomeScreen />;
+    case 'lobby': return <Lobby />;
+    case 'role_reveal': return <RoleReveal />;
+    case 'night': return <NightPhase />;
+    case 'day': return <DayPhase />;
+    case 'game_over': return <GameOver />;
+    default: return <HomeScreen />;
+  }
 };
-
-const Index = PlaceholderIndex;
 
 export default Index;
