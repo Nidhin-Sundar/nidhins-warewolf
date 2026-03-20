@@ -10,11 +10,7 @@ export function Lobby() {
   const { room, players, myPlayer, toggleReady, startGame, leaveRoom, subscribeToRoom } = useGameStore();
   const [copied, setCopied] = useState(false);
 
-  useEffect(() => {
-    if (!room) return;
-    const unsub = subscribeToRoom(room.id);
-    return unsub;
-  }, [room?.id]);
+  // Subscription handled by parent Index component
 
   if (!room || !myPlayer) return null;
 
