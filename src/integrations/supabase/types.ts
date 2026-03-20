@@ -14,7 +14,235 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      game_actions: {
+        Row: {
+          action_type: string
+          created_at: string
+          id: string
+          player_id: string
+          result: string | null
+          room_id: string
+          round: number
+          target_id: string | null
+        }
+        Insert: {
+          action_type: string
+          created_at?: string
+          id?: string
+          player_id: string
+          result?: string | null
+          room_id: string
+          round: number
+          target_id?: string | null
+        }
+        Update: {
+          action_type?: string
+          created_at?: string
+          id?: string
+          player_id?: string
+          result?: string | null
+          room_id?: string
+          round?: number
+          target_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "game_actions_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "game_actions_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "rooms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "game_actions_target_id_fkey"
+            columns: ["target_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          channel: string
+          content: string
+          created_at: string
+          id: string
+          player_id: string | null
+          room_id: string
+        }
+        Insert: {
+          channel?: string
+          content: string
+          created_at?: string
+          id?: string
+          player_id?: string | null
+          room_id: string
+        }
+        Update: {
+          channel?: string
+          content?: string
+          created_at?: string
+          id?: string
+          player_id?: string | null
+          room_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      players: {
+        Row: {
+          alive: boolean
+          client_id: string
+          created_at: string
+          has_heal_potion: boolean
+          has_poison_potion: boolean
+          id: string
+          is_moderator: boolean
+          is_ready: boolean
+          name: string
+          role: string | null
+          room_id: string
+        }
+        Insert: {
+          alive?: boolean
+          client_id: string
+          created_at?: string
+          has_heal_potion?: boolean
+          has_poison_potion?: boolean
+          id?: string
+          is_moderator?: boolean
+          is_ready?: boolean
+          name: string
+          role?: string | null
+          room_id: string
+        }
+        Update: {
+          alive?: boolean
+          client_id?: string
+          created_at?: string
+          has_heal_potion?: boolean
+          has_poison_potion?: boolean
+          id?: string
+          is_moderator?: boolean
+          is_ready?: boolean
+          name?: string
+          role?: string | null
+          room_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "players_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rooms: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          phase: string | null
+          phase_end_at: string | null
+          round: number
+          status: string
+          winner: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          phase?: string | null
+          phase_end_at?: string | null
+          round?: number
+          status?: string
+          winner?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          phase?: string | null
+          phase_end_at?: string | null
+          round?: number
+          status?: string
+          winner?: string | null
+        }
+        Relationships: []
+      }
+      votes: {
+        Row: {
+          created_at: string
+          id: string
+          room_id: string
+          round: number
+          target_id: string | null
+          voter_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          room_id: string
+          round: number
+          target_id?: string | null
+          voter_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          room_id?: string
+          round?: number
+          target_id?: string | null
+          voter_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "votes_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "rooms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "votes_target_id_fkey"
+            columns: ["target_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "votes_voter_id_fkey"
+            columns: ["voter_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
