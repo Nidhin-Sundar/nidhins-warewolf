@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Check, Copy, LogOut, Play, Users } from 'lucide-react';
 
 export function Lobby() {
-  const { room, players, myPlayer, toggleReady, startGame, leaveRoom, subscribeToRoom } = useGameStore();
+  const { room, players, myPlayer, toggleReady, startGame, leaveRoom } = useGameStore();
   const [copied, setCopied] = useState(false);
 
   // Subscription handled by parent Index component
