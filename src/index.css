@@ -1,58 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 228 28% 6%;
-    --foreground: 220 15% 88%;
+    --background: 0 0% 7%;
+    --foreground: 30 10% 82%;
 
-    --card: 228 24% 10%;
-    --card-foreground: 220 15% 88%;
+    --card: 0 0% 10%;
+    --card-foreground: 30 10% 82%;
 
-    --popover: 228 24% 10%;
-    --popover-foreground: 220 15% 88%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 30 10% 82%;
 
-    --primary: 0 72% 46%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 0 55% 42%;
+    --primary-foreground: 0 0% 95%;
 
-    --secondary: 228 20% 16%;
-    --secondary-foreground: 220 15% 88%;
+    --secondary: 0 5% 14%;
+    --secondary-foreground: 30 10% 82%;
 
-    --muted: 228 18% 18%;
-    --muted-foreground: 220 10% 55%;
+    --muted: 0 4% 18%;
+    --muted-foreground: 30 5% 45%;
 
-    --accent: 38 92% 50%;
-    --accent-foreground: 228 28% 6%;
+    --accent: 25 60% 55%;
+    --accent-foreground: 0 0% 7%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 228 18% 18%;
-    --input: 228 18% 22%;
-    --ring: 0 72% 46%;
+    --border: 0 6% 16%;
+    --input: 0 5% 18%;
+    --ring: 0 55% 42%;
 
-    --radius: 0.625rem;
+    --radius: 0.5rem;
 
-    --sidebar-background: 228 24% 10%;
-    --sidebar-foreground: 220 15% 88%;
-    --sidebar-primary: 0 72% 46%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 228 18% 18%;
-    --sidebar-accent-foreground: 220 15% 88%;
-    --sidebar-border: 228 18% 18%;
-    --sidebar-ring: 0 72% 46%;
+    --sidebar-background: 0 0% 8%;
+    --sidebar-foreground: 30 10% 82%;
+    --sidebar-primary: 0 55% 42%;
+    --sidebar-primary-foreground: 0 0% 95%;
+    --sidebar-accent: 0 4% 15%;
+    --sidebar-accent-foreground: 30 10% 82%;
+    --sidebar-border: 0 6% 16%;
+    --sidebar-ring: 0 55% 42%;
 
     /* Game-specific tokens */
-    --night-bg: 230 35% 4%;
-    --night-surface: 230 30% 8%;
-    --wolf-red: 0 72% 46%;
-    --village-amber: 38 92% 50%;
-    --seer-blue: 210 80% 55%;
-    --doctor-green: 145 60% 42%;
-    --witch-purple: 280 55% 55%;
-    --hunter-orange: 25 90% 52%;
-    --moon-glow: 45 80% 85%;
+    --night-bg: 0 0% 4%;
+    --night-surface: 0 3% 8%;
+    --wolf-red: 0 55% 42%;
+    --village-amber: 25 60% 55%;
+    --seer-blue: 0 40% 55%;
+    --doctor-green: 145 30% 38%;
+    --witch-purple: 280 30% 45%;
+    --hunter-orange: 25 70% 48%;
+    --moon-glow: 30 30% 75%;
+
+    /* Noir extras */
+    --noir-warm: 25 15% 65%;
+    --noir-rose: 0 35% 55%;
+    --noir-blood: 0 65% 30%;
   }
 }
 
@@ -62,7 +69,15 @@
   }
   body {
     @apply bg-background text-foreground antialiased;
+    font-family: 'Crimson Text', Georgia, serif;
     font-feature-settings: "cv11", "ss01";
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.04em;
+  }
+  code, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
   }
 }
 
@@ -70,11 +85,17 @@
   .text-balance {
     text-wrap: balance;
   }
+  .font-display {
+    font-family: 'Cinzel', serif;
+  }
+  .font-body {
+    font-family: 'Crimson Text', Georgia, serif;
+  }
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 8px 2px hsl(var(--wolf-red) / 0.3); }
-  50% { box-shadow: 0 0 20px 6px hsl(var(--wolf-red) / 0.5); }
+  0%, 100% { box-shadow: 0 0 8px 2px hsl(var(--wolf-red) / 0.25); }
+  50% { box-shadow: 0 0 24px 8px hsl(var(--wolf-red) / 0.4); }
 }
 
 @keyframes moon-float {
@@ -83,7 +104,7 @@
 }
 
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(16px); filter: blur(4px); }
+  from { opacity: 0; transform: translateY(20px); filter: blur(4px); }
   to { opacity: 1; transform: translateY(0); filter: blur(0); }
 }
 
@@ -92,11 +113,87 @@
   to { opacity: 1; transform: translateX(0); }
 }
 
-.animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
+  75% { opacity: 0.95; }
+}
+
+@keyframes blood-pulse {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes subtle-breathe {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.animate-pulse-glow { animation: pulse-glow 2.5s ease-in-out infinite; }
 .animate-moon-float { animation: moon-float 4s ease-in-out infinite; }
-.animate-fade-up { animation: fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-fade-up { animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
 .animate-slide-in { animation: slide-in-right 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-flicker { animation: flicker 3s ease-in-out infinite; }
+.animate-breathe { animation: subtle-breathe 4s ease-in-out infinite; }
 
 .night-bg {
   background: radial-gradient(ellipse at 50% 0%, hsl(var(--night-surface)) 0%, hsl(var(--night-bg)) 70%);
+}
+
+.noir-gradient {
+  background: linear-gradient(180deg, hsl(0 0% 9%) 0%, hsl(0 0% 5%) 100%);
+}
+
+.noir-card {
+  background: hsl(0 0% 10%);
+  border: 1px solid hsl(0 6% 16%);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.noir-card:hover {
+  border-color: hsl(var(--wolf-red) / 0.3);
+  box-shadow: 0 0 20px -5px hsl(var(--wolf-red) / 0.1);
+}
+
+.noir-card-selected {
+  border-color: hsl(var(--wolf-red) / 0.5) !important;
+  box-shadow: 0 0 25px -5px hsl(var(--wolf-red) / 0.2) !important;
+}
+
+.noir-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, hsl(var(--wolf-red) / 0.3), transparent);
+}
+
+.noir-text-glow {
+  text-shadow: 0 0 20px hsl(var(--wolf-red) / 0.3);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(0 0% 20%);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(0 0% 30%);
+}
+
+/* Status dot */
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.status-ready {
+  background: hsl(var(--wolf-red));
+  box-shadow: 0 0 6px hsl(var(--wolf-red) / 0.5);
+}
+.status-waiting {
+  background: hsl(var(--muted-foreground));
 }
