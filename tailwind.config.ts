@@ -11,6 +11,11 @@ export default {
       screens: { "2xl": "1400px" },
     },
     extend: {
+      fontFamily: {
+        display: ['Cinzel', 'serif'],
+        body: ['Crimson Text', 'Georgia', 'serif'],
+        mono: ['JetBrains Mono', 'monospace'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -41,6 +46,11 @@ export default {
         witch: "hsl(var(--witch-purple))",
         hunter: "hsl(var(--hunter-orange))",
         moon: "hsl(var(--moon-glow))",
+        noir: {
+          warm: "hsl(var(--noir-warm))",
+          rose: "hsl(var(--noir-rose))",
+          blood: "hsl(var(--noir-blood))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

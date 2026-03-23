@@ -18,7 +18,6 @@ export function PlayerList({ onSelect, selectedId, selectable = false, showRoles
   if (excludeSelf && myPlayer) filtered = filtered.filter(p => p.id !== myPlayer.id);
   if (aliveOnly) filtered = filtered.filter(p => p.alive);
 
-  // Count votes for each player this round
   const currentVotes = votes.filter(v => v.round === room?.round);
   const voteCounts: Record<string, number> = {};
   currentVotes.forEach(v => { if (v.target_id) voteCounts[v.target_id] = (voteCounts[v.target_id] || 0) + 1; });
@@ -38,29 +37,29 @@ export function PlayerList({ onSelect, selectedId, selectable = false, showRoles
             onClick={() => onSelect?.(p.id)}
             className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-all ${
               isSelected
-                ? 'bg-primary/20 border border-primary/40 shadow-[0_0_12px_2px_hsl(var(--wolf-red)/0.15)]'
-                : 'bg-secondary/40 border border-transparent hover:bg-secondary/60'
+                ? 'noir-card-selected bg-primary/10 border border-primary/40'
+                : 'noir-card'
             } ${isDead ? 'opacity-40 line-through' : ''} ${
               selectable && !isDead && !isMe ? 'cursor-pointer active:scale-[0.98]' : 'cursor-default'
             }`}
           >
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0 ${
-              isDead ? 'bg-muted' : 'bg-primary/20'
+            <div className={`w-8 h-8 rounded-sm flex items-center justify-center text-sm font-display font-bold shrink-0 ${
+              isDead ? 'bg-muted' : 'bg-secondary'
             }`}>
               {showRoles ? getRoleEmoji(p.role) : p.name[0].toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
-              <span className={`font-medium text-sm ${isDead ? 'text-muted-foreground' : ''}`}>
+              <span className={`font-display text-xs tracking-wider uppercase ${isDead ? 'text-muted-foreground' : ''}`}>
                 {p.name}
-                {isMe && <span className="text-muted-foreground text-xs ml-1">(you)</span>}
+                {isMe && <span className="text-muted-foreground ml-1 normal-case tracking-normal font-body">(you)</span>}
               </span>
               {showRoles && (
-                <span className={`block text-xs capitalize ${getRoleColor(p.role)}`}>{p.role}</span>
+                <span className={`block text-[11px] capitalize font-body ${getRoleColor(p.role)}`}>{p.role}</span>
               )}
             </div>
-            {isDead && <Badge variant="outline" className="text-xs shrink-0">☠️ Dead</Badge>}
+            {isDead && <Badge variant="outline" className="text-[10px] shrink-0 font-display tracking-wider">☠️ Dead</Badge>}
             {voteCount > 0 && !isDead && (
-              <Badge className="bg-wolf/20 text-wolf text-xs shrink-0">{voteCount} vote{voteCount > 1 ? 's' : ''}</Badge>
+              <Badge className="bg-primary/20 text-primary border-primary/30 text-[10px] shrink-0 font-display tracking-wider">{voteCount} vote{voteCount > 1 ? 's' : ''}</Badge>
             )}
           </button>
         );

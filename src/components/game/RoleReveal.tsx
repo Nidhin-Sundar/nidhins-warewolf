@@ -1,7 +1,5 @@
 import { useState } from 'react';
 import { useGameStore } from '@/stores/gameStore';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { getRoleEmoji, getRoleColor, getRoleDescription } from '@/lib/gameLogic';
 
 export function RoleReveal() {
@@ -11,37 +9,42 @@ export function RoleReveal() {
   if (!myPlayer) return null;
 
   return (
-    <div className="min-h-screen night-bg flex items-center justify-center p-4">
-      <div className="w-full max-w-sm animate-fade-up text-center">
+    <div className="min-h-screen noir-gradient flex items-center justify-center p-4 relative overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full bg-primary/[0.04] blur-[100px]" />
+      </div>
+
+      <div className="w-full max-w-sm animate-fade-up text-center relative z-10">
         {!revealed ? (
           <>
-            <div className="text-6xl mb-6">🃏</div>
-            <h2 className="text-2xl font-bold mb-2">Your Role</h2>
-            <p className="text-muted-foreground mb-6">Tap to reveal your secret identity</p>
-            <Button
+            <div className="text-7xl mb-8 animate-breathe">🃏</div>
+            <h2 className="text-3xl font-display font-bold tracking-wider uppercase mb-3 noir-text-glow">Your Role</h2>
+            <div className="noir-divider mx-auto w-32 mb-4" />
+            <p className="text-muted-foreground mb-8 font-body italic text-lg">Tap to reveal your secret identity</p>
+            <button
               onClick={() => setRevealed(true)}
-              className="w-full h-14 text-lg active:scale-[0.98] transition-transform"
-              size="lg"
+              className="w-full h-14 rounded-lg bg-primary/90 hover:bg-primary text-primary-foreground font-display text-sm tracking-[0.15em] uppercase transition-all active:scale-[0.98]"
             >
               Reveal Role
-            </Button>
+            </button>
           </>
         ) : (
-          <Card className="p-8 animate-fade-up">
-            <div className="text-6xl mb-4">{getRoleEmoji(myPlayer.role)}</div>
-            <h2 className={`text-3xl font-bold mb-2 capitalize ${getRoleColor(myPlayer.role)}`}>
+          <div className="noir-card rounded-lg p-8 animate-fade-up">
+            <div className="text-7xl mb-5">{getRoleEmoji(myPlayer.role)}</div>
+            <h2 className={`text-3xl font-display font-bold mb-3 capitalize tracking-wider ${getRoleColor(myPlayer.role)}`}>
               {myPlayer.role}
             </h2>
-            <p className="text-muted-foreground text-sm mb-6 leading-relaxed">
+            <div className="noir-divider mx-auto w-24 mb-4" />
+            <p className="text-muted-foreground font-body text-base mb-8 leading-relaxed italic">
               {getRoleDescription(myPlayer.role)}
             </p>
-            <Button
+            <button
               onClick={() => setScreen(room?.phase === 'night' ? 'night' : 'day')}
-              className="w-full active:scale-[0.98] transition-transform"
+              className="w-full h-12 rounded-lg bg-primary/90 hover:bg-primary text-primary-foreground font-display text-sm tracking-[0.15em] uppercase transition-all active:scale-[0.98]"
             >
               Continue to Game
-            </Button>
-          </Card>
+            </button>
+          </div>
         )}
       </div>
     </div>
