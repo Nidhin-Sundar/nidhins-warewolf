@@ -1,0 +1,329 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 240 40% 6%;
+    --foreground: 210 20% 85%;
+
+    --card: 240 30% 9%;
+    --card-foreground: 210 20% 85%;
+
+    --popover: 240 30% 9%;
+    --popover-foreground: 210 20% 85%;
+
+    --primary: 355 80% 55%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 240 25% 14%;
+    --secondary-foreground: 210 20% 85%;
+
+    --muted: 240 20% 18%;
+    --muted-foreground: 240 10% 60%;
+
+    --accent: 35 80% 60%;
+    --accent-foreground: 240 40% 6%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 20% 20%;
+    --input: 240 20% 20%;
+    --ring: 355 80% 55%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 240 40% 6%;
+    --sidebar-foreground: 210 20% 85%;
+    --sidebar-primary: 355 80% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 25% 14%;
+    --sidebar-accent-foreground: 210 20% 85%;
+    --sidebar-border: 240 20% 20%;
+    --sidebar-ring: 355 80% 55%;
+
+    /* Game-specific tokens */
+    --night-bg: 240 50% 5%;
+    --night-surface: 240 40% 9%;
+    --wolf-red: 355 85% 58%;
+    --village-amber: 40 90% 60%;
+    --seer-blue: 195 85% 65%;
+    --doctor-green: 145 75% 50%;
+    --witch-purple: 280 65% 65%;
+    --hunter-orange: 25 85% 55%;
+    --moon-glow: 210 40% 85%;
+
+    /* Mystic extras */
+    --mystic-teal: 175 60% 45%;
+    --mystic-indigo: 255 40% 35%;
+    --mystic-dawn: 15 50% 25%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-feature-settings: "cv11", "ss01";
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.04em;
+  }
+
+  code,
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .font-display {
+    font-family: 'Cinzel', serif;
+  }
+
+  .font-body {
+    font-family: 'Crimson Text', Georgia, serif;
+  }
+}
+
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 8px 2px hsl(var(--wolf-red) / 0.25);
+  }
+
+  50% {
+    box-shadow: 0 0 24px 8px hsl(var(--wolf-red) / 0.4);
+  }
+}
+
+@keyframes moon-float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+    filter: blur(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes flicker {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.85;
+  }
+
+  75% {
+    opacity: 0.95;
+  }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes float-rapid {
+  0%, 100% { transform: translateY(0px) scale(1); }
+  50% { transform: translateY(-3px) scale(1.02); }
+}
+
+@keyframes subtle-breathe {
+
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes float-slow {
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  33% {
+    transform: translateY(-10px) rotate(1deg);
+  }
+
+  66% {
+    transform: translateY(-5px) rotate(-1deg);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2.5s ease-in-out infinite;
+}
+
+.animate-moon-float {
+  animation: moon-float 4s ease-in-out infinite;
+}
+
+.animate-fade-up {
+  animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-slide-in {
+  animation: slide-in-right 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-flicker {
+  animation: flicker 3s ease-in-out infinite;
+}
+
+.animate-breathe {
+  animation: subtle-breathe 4s ease-in-out infinite;
+}
+
+.animate-float-slow {
+  animation: float-slow 8s ease-in-out infinite;
+}
+
+.night-bg {
+  background: radial-gradient(ellipse at 50% 0%, hsl(var(--night-surface)) 0%, hsl(var(--night-bg)) 70%);
+}
+
+.day-bg {
+  background: radial-gradient(ellipse at 50% -20%, hsl(var(--mystic-dawn)) 0%, hsl(var(--background)) 80%);
+}
+
+.mystic-gradient {
+  background: linear-gradient(180deg, hsl(240 50% 8%) 0%, hsl(240 50% 3%) 100%);
+}
+
+.noir-card {
+  background: hsl(240 30% 12% / 0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid hsla(210, 20%, 85%, 0.1);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
+}
+
+.noir-glass {
+  background: hsla(240, 40%, 10%, 0.75);
+  backdrop-filter: blur(20px) saturate(200%);
+  border: 1px solid hsla(210, 20%, 85%, 0.12);
+  border-top-color: hsla(210, 20%, 85%, 0.2);
+  box-shadow: 0 15px 35px 0 rgba(0, 0, 0, 0.45), inset 0 1px 0 hsla(210, 20%, 85%, 0.1);
+}
+
+.noir-card:hover {
+  border-color: hsl(var(--wolf-red) / 0.4);
+  box-shadow: 0 0 30px -5px hsl(var(--wolf-red) / 0.15);
+  transform: translateY(-2px);
+}
+
+.noir-card-selected {
+  border-color: hsl(var(--wolf-red) / 0.6) !important;
+  box-shadow: 0 0 35px -5px hsl(var(--wolf-red) / 0.25) !important;
+  background: hsl(var(--wolf-red) / 0.05);
+}
+
+.noir-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, hsl(var(--wolf-red) / 0.4), transparent);
+  opacity: 0.6;
+}
+
+.noir-text-glow {
+  text-shadow: 0 0 20px hsl(var(--wolf-red) / 0.6), 0 0 10px hsl(var(--wolf-red) / 0.3);
+}
+
+.text-glow-amber {
+  text-shadow: 0 0 25px hsl(var(--village-amber) / 0.6), 0 0 12px hsl(var(--village-amber) / 0.3);
+}
+
+.text-glow-mystic {
+  text-shadow: 0 0 25px hsl(var(--mystic-teal) / 0.6), 0 0 12px hsl(var(--mystic-teal) / 0.3);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(220, 38, 38, 0.2);
+}
+
+/* Status dot */
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.status-ready {
+  background: hsl(var(--wolf-red));
+  box-shadow: 0 0 6px hsl(var(--wolf-red) / 0.5);
+}
+
+.status-waiting {
+  background: hsl(var(--muted-foreground));
+}
