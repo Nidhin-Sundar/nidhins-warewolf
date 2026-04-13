@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, ReactNode } from 'react';
 import { useGameStore } from '@/stores/gameStore';
 import { Badge } from '@/components/ui/badge';
 import { PlayerList } from './PlayerList';
@@ -83,7 +83,7 @@ export function NightPhase() {
       );
     }
 
-    const ActionButton = ({ onClick, disabled, label, color, icon }: { onClick: () => void; disabled: boolean; label: string; color: string; icon?: any }) => (
+    const ActionButton = ({ onClick, disabled, label, color, icon }: { onClick: () => void; disabled: boolean; label: string; color: string; icon?: ReactNode }) => (
       <button
         onClick={onClick}
         disabled={disabled}
