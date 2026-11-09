@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useGameStore } from '@/stores/gameStore';
+import { sound } from '@/lib/sound';
 
 import { Badge } from '@/components/ui/badge';
 import { Check, Copy, LogOut, Play, Users, Skull, Eye, Shield, BookOpen, Settings, Clock, AlertCircle, Moon, Sun, FlaskConical, Crosshair, Home } from 'lucide-react';
@@ -32,16 +33,13 @@ export function Lobby() {
 
   // Calculate role distribution
   const wolfCount = players.length <= 6 ? 1 : players.length <= 9 ? 2 : players.length <= 12 ? 3 : 4;
-  const hasDoctor = players.length >= 5;
-  const hasWitch = players.length >= 7;
-  const hasHunter = players.length >= 9;
+  const hasBodyguard = players.length >= 4;
 
   const roleInfo = [
     { name: 'Werewolf', count: wolfCount, icon: <Skull className="w-4 h-4" />, color: 'text-primary', desc: 'Eliminates a villager each night. Pretends to be an innocent villager during the day.' },
     { name: 'Seer', count: 1, icon: <Eye className="w-4 h-4" />, color: 'text-accent', desc: 'Secretly investigates one player each night to learn if they are a Werewolf or Villager.' },
-    { name: 'Doctor', count: hasDoctor ? 1 : 0, icon: <Shield className="w-4 h-4" />, color: 'text-doctor', desc: 'Protects one player each night from attack. If attacked, that player survives.', inactive: !hasDoctor },
-    ...(hasWitch ? [{ name: 'Witch', count: 1, icon: <AlertCircle className="w-4 h-4" />, color: 'text-witch', desc: 'Holds one healing potion (to save a victim) and one poison potion (to eliminate a suspect).' }] : []),
-    ...(hasHunter ? [{ name: 'Hunter', count: 1, icon: <AlertCircle className="w-4 h-4" />, color: 'text-hunter', desc: 'If eliminated, fires one final arrow to take down any player of their choice.' }] : []),
+    { name: 'Bodyguard', count: hasBodyguard ? 1 : 0, icon: <Shield className="w-4 h-4" />, color: 'text-doctor', desc: 'Protects one player each night from attack. If attacked, that player survives.', inactive: !hasBodyguard },
+    { name: 'Villager', count: Math.max(0, players.length - wolfCount - 1 - (hasBodyguard ? 1 : 0)), icon: <Users className="w-4 h-4" />, color: 'text-village', desc: 'Uses voice and vote during the day to identify and eliminate the werewolves.' },
   ];
 
   return (
@@ -377,7 +375,10 @@ export function Lobby() {
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                   <button
-                    onClick={toggleReady}
+                    onClick={() => {
+                      sound.playClick();
+                      toggleReady();
+                    }}
                     className={`relative overflow-hidden w-full sm:w-auto h-14 px-10 rounded-xl font-display text-xs tracking-[0.3em] uppercase transition-all active:scale-[0.98] border shadow-2xl ${myPlayer.is_ready
                       ? 'bg-transparent border-white/20 text-muted-foreground hover:border-white/40'
                       : 'bg-primary/90 hover:bg-primary text-primary-foreground border-transparent shadow-[0_0_40px_-5px_hsl(var(--wolf-red)/0.5)]'
@@ -389,7 +390,10 @@ export function Lobby() {
 
                   {myPlayer.is_moderator && (
                     <button
-                      onClick={startGame}
+                      onClick={() => {
+                        sound.playWolfHowl();
+                        startGame();
+                      }}
                       disabled={!canStart}
                       className="relative overflow-hidden w-full sm:w-auto h-14 px-10 rounded-xl bg-accent hover:bg-accent/90 text-accent-foreground font-display text-xs tracking-[0.3em] uppercase transition-all active:scale-[0.98] disabled:opacity-20 disabled:grayscale flex items-center justify-center gap-3 shadow-[0_0_40px_-5px_hsl(var(--village-amber)/0.4)]"
                     >

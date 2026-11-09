@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useGameStore } from '@/stores/gameStore';
 import { PHASE_DURATION } from '@/lib/gameLogic';
+import { sound } from '@/lib/sound';
 
 export function PhaseTimer() {
   const { room, myPlayer, advancePhase } = useGameStore();
@@ -18,6 +19,12 @@ export function PhaseTimer() {
       const now = Date.now();
       const left = Math.max(0, Math.ceil((end - now) / 1000));
       setRemaining(left);
+
+      // Play heartbeat countdown sound in final 10 seconds
+      if (left <= 10 && left > 0) {
+        sound.playHeartbeat();
+      }
+
       if (left <= 0 && myPlayer?.is_moderator && !hasAdvanced) {
         setHasAdvanced(true);
         advancePhase();

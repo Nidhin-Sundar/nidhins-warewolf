@@ -12,6 +12,8 @@ function formatErrorMessage(err) {
   return msg;
 }
 
+const ACTIVE_ROOM_KEY = 'werewolf_active_room_id';
+
 export const useGameStore = create((set, get) => ({
   screen: 'home',
   room: null,
@@ -24,10 +26,54 @@ export const useGameStore = create((set, get) => ({
   error: null,
   hasSeenRoleReveal: false,
   isAdvancing: false,
+  isRestoring: false,
 
   setScreen: (screen) => set({ screen }),
   setError: (error) => set({ error: formatErrorMessage(error) }),
   dismissRoleReveal: () => set({ hasSeenRoleReveal: true, screen: 'night' }),
+
+  restoreSession: async () => {
+    try {
+      const savedRoomId = localStorage.getItem(ACTIVE_ROOM_KEY);
+      if (!savedRoomId) return;
+
+      set({ isRestoring: true });
+      const clientId = get().clientId;
+
+      // Verify room still exists and fetch player
+      const { data: room, error: roomErr } = await supabase
+        .from('rooms')
+        .select()
+        .eq('id', savedRoomId)
+        .maybeSingle();
+
+      if (roomErr || !room) {
+        localStorage.removeItem(ACTIVE_ROOM_KEY);
+        set({ isRestoring: false });
+        return;
+      }
+
+      const { data: myPlayer } = await supabase
+        .from('players')
+        .select()
+        .eq('room_id', room.id)
+        .eq('client_id', clientId)
+        .maybeSingle();
+
+      if (!myPlayer) {
+        localStorage.removeItem(ACTIVE_ROOM_KEY);
+        set({ isRestoring: false });
+        return;
+      }
+
+      set({ room, myPlayer, isRestoring: false });
+      // subscribeToRoom will handle fetching all messages, players, and setting the proper screen
+      get().subscribeToRoom(room.id);
+    } catch (err) {
+      localStorage.removeItem(ACTIVE_ROOM_KEY);
+      set({ isRestoring: false });
+    }
+  },
 
   createRoom: async (name) => {
     try {
@@ -56,6 +102,9 @@ export const useGameStore = create((set, get) => ({
         return;
       }
 
+      try {
+        localStorage.setItem(ACTIVE_ROOM_KEY, room.id);
+      } catch (_) {}
       set({ room, myPlayer: player, players: [player], screen: 'lobby', error: null, hasSeenRoleReveal: false });
     } catch (err) {
       set({ error: formatErrorMessage(err) });
@@ -101,6 +150,9 @@ export const useGameStore = create((set, get) => ({
         .maybeSingle();
 
       if (existing) {
+        try {
+          localStorage.setItem(ACTIVE_ROOM_KEY, room.id);
+        } catch (_) {}
         set({ room, myPlayer: existing, screen: 'lobby', error: null, hasSeenRoleReveal: false });
         return;
       }
@@ -116,6 +168,9 @@ export const useGameStore = create((set, get) => ({
         return;
       }
 
+      try {
+        localStorage.setItem(ACTIVE_ROOM_KEY, room.id);
+      } catch (_) {}
       set({ room, myPlayer: player, screen: 'lobby', error: null, hasSeenRoleReveal: false });
     } catch (err) {
       set({ error: formatErrorMessage(err) });
@@ -123,6 +178,9 @@ export const useGameStore = create((set, get) => ({
   },
 
   leaveRoom: async () => {
+    try {
+      localStorage.removeItem(ACTIVE_ROOM_KEY);
+    } catch (_) {}
     try {
       const { myPlayer } = get();
       if (myPlayer) {
@@ -315,57 +373,46 @@ export const useGameStore = create((set, get) => ({
         const round = room.round;
         const roundActions = actions.filter(a => a.round === round);
 
-        // Werewolf target (majority vote)
+        // Werewolf target (majority vote, tie = no kill)
         const wolfKills = roundActions.filter(a => a.action_type === 'werewolf_kill' && a.target_id);
         const killTargets = {};
         wolfKills.forEach(a => {
           if (a.target_id) killTargets[a.target_id] = (killTargets[a.target_id] || 0) + 1;
         });
-        const killTarget = Object.entries(killTargets).sort((a, b) => b[1] - a[1])[0]?.[0];
 
-        // Doctor protection
-        const doctorSave = roundActions.find(a => a.action_type === 'doctor_save')?.target_id;
+        const sortedKills = Object.entries(killTargets).sort((a, b) => b[1] - a[1]);
+        let killTarget = null;
+        let wolfTie = false;
 
-        // Witch heal
-        const witchHeal = roundActions.find(a => a.action_type === 'witch_heal')?.target_id;
+        if (sortedKills.length > 0) {
+          // If there's more than one target and top two have equal votes, it's a tie
+          if (sortedKills.length > 1 && sortedKills[0][1] === sortedKills[1][1]) {
+            wolfTie = true;
+            killTarget = null;
+          } else {
+            killTarget = sortedKills[0][0];
+          }
+        }
 
-        // Witch poison
-        const witchPoison = roundActions.find(a => a.action_type === 'witch_poison')?.target_id;
+        // Bodyguard protection (action_type: 'doctor_save')
+        const bodyguardSave = roundActions.find(a => a.action_type === 'doctor_save')?.target_id;
 
         const killed = [];
 
-        // Werewolf kill succeeds only if not protected by Doctor or Witch
-        if (killTarget && killTarget !== doctorSave && killTarget !== witchHeal) {
+        // Werewolf kill succeeds only if agreed upon and not protected by Bodyguard
+        if (killTarget && killTarget !== bodyguardSave) {
           killed.push(killTarget);
           await supabase.from('players').update({ alive: false }).eq('id', killTarget);
         }
 
-        // Witch poison kill
-        if (witchPoison && !killed.includes(witchPoison)) {
-          killed.push(witchPoison);
-          await supabase.from('players').update({ alive: false }).eq('id', witchPoison);
-        }
-
-        // Hunter death check
-        const hunterPlayer = players.find(p => p.role === 'hunter' && killed.includes(p.id));
-        if (hunterPlayer) {
-          const hunterShot = roundActions.find(
-            a => a.action_type === 'hunter_shoot' && a.player_id === hunterPlayer.id && a.target_id
-          )?.target_id;
-          if (hunterShot && !killed.includes(hunterShot)) {
-            killed.push(hunterShot);
-            await supabase.from('players').update({ alive: false }).eq('id', hunterShot);
-            const hunterTarget = players.find(p => p.id === hunterShot);
-            await supabase.from('messages').insert({
-              room_id: room.id,
-              content: `🏹 With their dying breath, the Hunter (${hunterPlayer.name}) took down ${hunterTarget?.name || 'their target'}!`,
-              channel: 'system',
-            });
-          }
-        }
-
         // System messages for night results
-        if (killed.length === 0) {
+        if (wolfTie) {
+          await supabase.from('messages').insert({
+            room_id: room.id,
+            content: '☀️ Dawn breaks. The Werewolves were divided and could not agree on a victim — no one was attacked!',
+            channel: 'system',
+          });
+        } else if (killed.length === 0) {
           await supabase.from('messages').insert({
             room_id: room.id,
             content: '☀️ Dawn breaks. No one was killed last night! The village survived peacefully.',

@@ -1,13 +1,25 @@
+import { useEffect } from 'react';
 import { useGameStore } from '@/stores/gameStore';
+import { sound } from '@/lib/sound';
 import { PlayerList } from './PlayerList';
 import { Trophy, RotateCcw } from 'lucide-react';
 
 export function GameOver() {
   const { room, leaveRoom, returnToLobby, myPlayer } = useGameStore();
 
-  if (!room) return null;
+  const isWolvesWin = room?.winner === 'werewolves';
 
-  const isWolvesWin = room.winner === 'werewolves';
+  useEffect(() => {
+    if (room?.winner) {
+      sound.stopAmbient();
+      sound.playVictory(isWolvesWin);
+      if (isWolvesWin) {
+        setTimeout(() => sound.playWolfHowl(), 800);
+      }
+    }
+  }, [room?.winner]);
+
+  if (!room) return null;
 
   return (
     <div className="min-h-screen mystic-gradient flex items-center justify-center p-4 relative overflow-hidden">

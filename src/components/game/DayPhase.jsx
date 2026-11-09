@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useGameStore } from '@/stores/gameStore';
+import { sound } from '@/lib/sound';
 import { PlayerList } from './PlayerList';
 import { Chat } from './Chat';
 import { PhaseTimer } from './PhaseTimer';
@@ -40,10 +41,12 @@ export function DayPhase() {
 
   const handleVote = async () => {
     if (!selectedTarget) return;
+    sound.playGavel();
     await submitVote(selectedTarget);
   };
 
   const handleSkipVote = async () => {
+    sound.playClick();
     await submitVote(null);
     setSelectedTarget(null);
   };

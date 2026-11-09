@@ -10,33 +10,31 @@ import {
 
 describe('Game Logic', () => {
   describe('assignRoles', () => {
-    it('assigns 1 werewolf and 1 seer for 4 players', () => {
+    it('assigns 1 werewolf, 1 seer, 1 bodyguard, and 1 villager for 4 players', () => {
       const roles = assignRoles(4);
       expect(roles).toHaveLength(4);
       expect(roles.filter(r => r === 'werewolf')).toHaveLength(1);
       expect(roles.filter(r => r === 'seer')).toHaveLength(1);
-      expect(roles.filter(r => r === 'villager')).toHaveLength(2);
+      expect(roles.filter(r => r === 'bodyguard')).toHaveLength(1);
+      expect(roles.filter(r => r === 'villager')).toHaveLength(1);
     });
 
-    it('adds doctor at 5 players', () => {
+    it('assigns 1 werewolf, 1 seer, 1 bodyguard, and 2 villagers for 5 players', () => {
       const roles = assignRoles(5);
       expect(roles).toHaveLength(5);
       expect(roles.filter(r => r === 'werewolf')).toHaveLength(1);
-      expect(roles.filter(r => r === 'doctor')).toHaveLength(1);
+      expect(roles.filter(r => r === 'seer')).toHaveLength(1);
+      expect(roles.filter(r => r === 'bodyguard')).toHaveLength(1);
+      expect(roles.filter(r => r === 'villager')).toHaveLength(2);
     });
 
-    it('assigns 2 werewolves and adds witch at 7 players', () => {
+    it('assigns 2 werewolves for 7 players', () => {
       const roles = assignRoles(7);
       expect(roles).toHaveLength(7);
       expect(roles.filter(r => r === 'werewolf')).toHaveLength(2);
-      expect(roles.filter(r => r === 'witch')).toHaveLength(1);
-    });
-
-    it('adds hunter at 9 players', () => {
-      const roles = assignRoles(9);
-      expect(roles).toHaveLength(9);
-      expect(roles.filter(r => r === 'werewolf')).toHaveLength(2);
-      expect(roles.filter(r => r === 'hunter')).toHaveLength(1);
+      expect(roles.filter(r => r === 'seer')).toHaveLength(1);
+      expect(roles.filter(r => r === 'bodyguard')).toHaveLength(1);
+      expect(roles.filter(r => r === 'villager')).toHaveLength(3);
     });
   });
 

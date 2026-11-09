@@ -1,7 +1,7 @@
 export function assignRoles(playerCount) {
   const roles = [];
 
-  // Balanced Werewolf count:
+  // Werewolves:
   // 4-6 players: 1 werewolf
   // 7-9 players: 2 werewolves
   // 10-12 players: 3 werewolves
@@ -9,11 +9,9 @@ export function assignRoles(playerCount) {
   const wolfCount = playerCount <= 6 ? 1 : playerCount <= 9 ? 2 : playerCount <= 12 ? 3 : 4;
   for (let i = 0; i < wolfCount; i++) roles.push('werewolf');
 
-  // Special roles based on player count
+  // Core requested special roles:
   roles.push('seer'); // Seer is always in the game
-  if (playerCount >= 5) roles.push('doctor');
-  if (playerCount >= 7) roles.push('witch');
-  if (playerCount >= 9) roles.push('hunter');
+  if (playerCount >= 4) roles.push('bodyguard'); // Bodyguard is active from 4+ players
 
   // Fill remaining spots with villagers
   while (roles.length < playerCount) roles.push('villager');
@@ -52,9 +50,8 @@ export function getRoleEmoji(role) {
     case 'werewolf': return '🐺';
     case 'villager': return '🏘️';
     case 'seer': return '🔮';
+    case 'bodyguard': return '🛡️';
     case 'doctor': return '💊';
-    case 'witch': return '🧪';
-    case 'hunter': return '🏹';
     default: return '❓';
   }
 }
@@ -63,9 +60,8 @@ export function getRoleColor(role) {
   switch (role) {
     case 'werewolf': return 'text-wolf';
     case 'seer': return 'text-seer';
+    case 'bodyguard': return 'text-doctor';
     case 'doctor': return 'text-doctor';
-    case 'witch': return 'text-witch';
-    case 'hunter': return 'text-hunter';
     default: return 'text-village';
   }
 }
@@ -90,12 +86,9 @@ export function getRoleDescription(role) {
       return 'You have no special night powers, but your voice and vote are vital. Pay close attention to chat, deduce who is lying, and vote out the werewolves.';
     case 'seer':
       return 'Each night, select one player to investigate. You will secretly discover whether that player is a Werewolf or a Villager.';
+    case 'bodyguard':
     case 'doctor':
-      return 'Each night, choose one player to protect. If the werewolves attack that player during the night, they will survive!';
-    case 'witch':
-      return 'You hold two one-time potions: a Healing Potion to save a player from death, and a Poison Potion to eliminate a player you suspect.';
-    case 'hunter':
-      return 'If you are killed at night or lynched by vote, you take one final shot to immediately eliminate any player of your choice!';
+      return 'Each night, choose one player to protect with your shield. If the werewolves attack that player during the night, they will survive!';
     default:
       return '';
   }

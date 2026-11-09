@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useGameStore } from '@/stores/gameStore';
+import { sound } from '@/lib/sound';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Users, ArrowRight, Plus, Skull } from 'lucide-react';
@@ -13,6 +14,7 @@ export function HomeScreen() {
 
   const handleCreate = async () => {
     if (!name.trim()) return;
+    sound.playClick();
     setLoading(true);
     await createRoom(name.trim());
     setLoading(false);
@@ -20,6 +22,7 @@ export function HomeScreen() {
 
   const handleJoin = async () => {
     if (!name.trim() || !code.trim()) return;
+    sound.playClick();
     setLoading(true);
     await joinRoom(code.trim(), name.trim());
     setLoading(false);

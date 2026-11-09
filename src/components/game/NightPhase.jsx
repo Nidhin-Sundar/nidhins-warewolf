@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useGameStore } from '@/stores/gameStore';
+import { sound } from '@/lib/sound';
 import { PlayerList } from './PlayerList';
 import { Chat } from './Chat';
 import { PhaseTimer } from './PhaseTimer';
@@ -42,11 +43,12 @@ export function NightPhase() {
       switch (myRole) {
         case 'werewolf': actionType = 'werewolf_kill'; break;
         case 'seer': actionType = 'seer_check'; break;
+        case 'bodyguard':
         case 'doctor': actionType = 'doctor_save'; break;
-        case 'hunter': actionType = 'hunter_shoot'; break;
         default: return;
       }
     }
+    sound.playClick();
     await submitNightAction(actionType, selectedTarget);
     setActionSubmitted(true);
   };
@@ -128,7 +130,7 @@ export function NightPhase() {
                 </Badge>
               </div>
               <p className="text-xs text-muted-foreground font-body">
-                Select a villager to eliminate tonight. If wolves vote for different targets, the player with the most votes is chosen.
+                Coordinate in secret pack chat and agree on a victim. If votes tie, the pack is divided and no kill will happen tonight!
               </p>
             </div>
 
@@ -190,6 +192,7 @@ export function NightPhase() {
           </div>
         );
 
+      case 'bodyguard':
       case 'doctor':
         return (
           <div className="space-y-6">
@@ -197,7 +200,7 @@ export function NightPhase() {
               <div className="flex items-center justify-between">
                 <h4 className="font-display text-sm tracking-[0.2em] uppercase text-doctor">Protect a Player</h4>
                 <Badge className="bg-doctor/20 text-doctor border-doctor/30 text-[9px] font-display tracking-widest uppercase">
-                  Doctor Shield
+                  Bodyguard Shield
                 </Badge>
               </div>
               <p className="text-xs text-muted-foreground font-body">

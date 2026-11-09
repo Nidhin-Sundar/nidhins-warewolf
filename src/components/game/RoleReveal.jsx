@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useGameStore } from '@/stores/gameStore';
+import { sound } from '@/lib/sound';
 import {
   getRoleEmoji,
   getRoleColor,
@@ -8,11 +9,12 @@ import {
   getRoleGoal,
 } from '@/lib/gameLogic';
 import { Badge } from '@/components/ui/badge';
-import { Shield, Skull, Eye, Moon, Sun, ArrowRight } from 'lucide-react';
+import { Shield, Skull, Eye, Moon, Sun, ArrowRight, Sparkles } from 'lucide-react';
 
 export function RoleReveal() {
   const { myPlayer, dismissRoleReveal, room } = useGameStore();
   const [revealed, setRevealed] = useState(false);
+  const [isFlipping, setIsFlipping] = useState(false);
 
   if (!myPlayer) return null;
 
@@ -22,6 +24,22 @@ export function RoleReveal() {
   const goal = getRoleGoal(role);
   const description = getRoleDescription(role);
 
+  const handleReveal = () => {
+    sound.playCardFlip();
+    setIsFlipping(true);
+    setTimeout(() => {
+      setRevealed(true);
+      if (isWolf) {
+        setTimeout(() => sound.playWolfHowl(), 300);
+      }
+    }, 400);
+  };
+
+  const handleProceed = () => {
+    sound.playClick();
+    dismissRoleReveal();
+  };
+
   return (
     <div className="min-h-screen mystic-gradient flex items-center justify-center p-4 relative overflow-hidden">
       {/* Cinematic background elements */}
@@ -30,10 +48,10 @@ export function RoleReveal() {
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
       </div>
 
-      <div className="w-full max-w-md animate-fade-up text-center relative z-10">
+      <div className={`w-full max-w-md transition-all duration-700 text-center relative z-10 ${isFlipping && !revealed ? 'scale-90 opacity-0 rotate-y-90' : 'animate-fade-up'}`}>
         {!revealed ? (
           <div className="space-y-8">
-            <div className="relative inline-block group animate-float-slow">
+            <div className="relative inline-block group animate-float-slow cursor-pointer" onClick={handleReveal}>
               <div className="text-8xl mb-2 grayscale group-hover:grayscale-0 transition-all duration-700 select-none">
                 🃏
               </div>
@@ -53,7 +71,7 @@ export function RoleReveal() {
             </div>
 
             <button
-              onClick={() => setRevealed(true)}
+              onClick={handleReveal}
               className="group relative w-full h-16 rounded-2xl overflow-hidden active:scale-[0.98] transition-all shadow-[0_0_40px_-10px_hsl(var(--wolf-red)/0.5)] border border-primary/30"
             >
               <div className="absolute inset-0 bg-primary/90 group-hover:bg-primary transition-colors" />
@@ -64,13 +82,13 @@ export function RoleReveal() {
             </button>
           </div>
         ) : (
-          <div className="noir-glass rounded-3xl p-8 sm:p-10 animate-fade-up border-primary/30 shadow-[0_0_50px_-10px_rgba(255,0,0,0.25)] relative overflow-hidden text-left">
+          <div className="noir-glass rounded-3xl p-8 sm:p-10 animate-scale-up border-primary/30 shadow-[0_0_50px_-10px_rgba(255,0,0,0.25)] relative overflow-hidden text-left">
             {/* Reveal Burst Effect */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-primary/20 blur-[70px] animate-pulse pointer-events-none" />
 
             <div className="relative z-10">
               <div className="text-center mb-6">
-                <div className="text-7xl sm:text-8xl mb-3 animate-fade-up select-none filter drop-shadow-[0_0_20px_rgba(255,0,0,0.4)]">
+                <div className="text-7xl sm:text-8xl mb-3 animate-bounce select-none filter drop-shadow-[0_0_20px_rgba(255,0,0,0.4)]">
                   {getRoleEmoji(role)}
                 </div>
 
@@ -108,12 +126,8 @@ export function RoleReveal() {
                         ? 'Coordinate with fellow wolves in secret chat and pick a villager to eliminate.'
                         : role === 'seer'
                         ? 'Select one player to investigate and learn their true allegiance.'
-                        : role === 'doctor'
+                        : role === 'bodyguard' || role === 'doctor'
                         ? 'Select one player to shield from werewolf attack.'
-                        : role === 'witch'
-                        ? 'Decide whether to use your heal or poison potion.'
-                        : role === 'hunter'
-                        ? 'Lock in a retribution target if you are eliminated.'
                         : 'Sleep through the night. Stay rested for the dawn.'}
                     </span>
                   </div>
@@ -133,7 +147,7 @@ export function RoleReveal() {
               </div>
 
               <button
-                onClick={dismissRoleReveal}
+                onClick={handleProceed}
                 className="relative overflow-hidden w-full h-14 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-display text-xs tracking-[0.25em] uppercase border border-primary/30 transition-all active:scale-[0.98] group shadow-lg flex items-center justify-center gap-3"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent w-[200%] animate-shimmer opacity-0 group-hover:opacity-100" />
